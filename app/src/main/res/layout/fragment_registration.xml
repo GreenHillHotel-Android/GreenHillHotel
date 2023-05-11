@@ -1,20 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context="ui.login.LoginFragment">
+    tools:context=".ui.registration.RegistrationFragment">
 
     <!-- TextView for heading -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"/>
+        android:text="Register" />
 
     <!-- Edit text for email -->
     <EditText
@@ -25,22 +25,22 @@
 
     <!-- Edit text for password -->
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/passwd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your Password"
         android:inputType="textPassword" />
 
-    <!-- Button for Login with text "Login" -->
+    <!-- Button for register with text "Register" -->
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btnregister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login" />
+        android:text="Register" />
 
-    <!-- ProgressBar for Loading Time -->
+    <!-- ProgressBar for loading time -->
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
