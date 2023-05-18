@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/nav_register"
         android:name="com.example.greenhillhotel.ui.registration.RegistrationFragment"
-        android:label="Login"
+        android:label="Registration"
         tools:layout="@layout/fragment_registration" />
 
 
