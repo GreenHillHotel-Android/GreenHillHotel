@@ -20,14 +20,20 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private InterstitialAd mInterstitialAd;
     FirebaseAuth mAuth;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -77,8 +83,23 @@ public class HomeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.updateNavigationView(currentUser.getEmail());
+            String userEmail = currentUser.getEmail();
+            DocumentReference userRef = db.collection("users").document(userEmail);
+            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        boolean isAdmin = documentSnapshot.getBoolean("isAdmin");
+                        MainActivity mainActivity = (MainActivity) getActivity();
+                        mainActivity.updateNavigationView(userEmail, isAdmin);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // Obsłuż błąd pobierania dokumentu
+                }
+            });
         }
     }
 

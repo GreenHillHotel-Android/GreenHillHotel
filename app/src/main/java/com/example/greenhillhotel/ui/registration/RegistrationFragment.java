@@ -75,6 +75,7 @@ public class RegistrationFragment extends Fragment {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 String email, password, name, surname;
+                boolean isAdmin = false;
                 email = String.valueOf(emailEditText.getText());
                 password = String.valueOf(passwordEditText.getText());
                 name = String.valueOf(nameEditText.getText());
@@ -103,10 +104,11 @@ public class RegistrationFragment extends Fragment {
                                     Map<String, Object> userData = new HashMap<>();
                                     userData.put("name", name);
                                     userData.put("surname", surname);
+                                    userData.put("isAdmin", isAdmin);
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
                                     if (currentUser != null) {
                                         MainActivity mainActivity = (MainActivity) getActivity();
-                                        mainActivity.updateNavigationView(currentUser.getEmail());
+                                        mainActivity.updateNavigationView(currentUser.getEmail(),false);
                                     }
 
                                     db.collection("users").document(uid)

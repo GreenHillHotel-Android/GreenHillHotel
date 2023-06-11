@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -35,6 +38,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.greenhillhotel.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ktx.Firebase;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavigationView navigationView;
     private InterstitialAd mInterstitialAd;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth auth;
     FirebaseUser user;
     TextView textView;
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView);
         navigationView = binding.navView;
 
+
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 if (currentUser != null) {
                     auth.signOut();
                     Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_SHORT).show();
+                    updateNavigationView(null, false);
                 } else {
                     Toast.makeText(MainActivity.this, "Not logged in", Toast.LENGTH_SHORT).show();
                 }
@@ -75,11 +84,12 @@ public class MainActivity extends AppCompatActivity {
         });
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
         });
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
@@ -96,24 +106,21 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
-
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_login, R.id.nav_register)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_login, R.id.nav_register, R.id.nav_admin_panel)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        updateNavigationView(user != null ? user.getEmail() : null, false);
 
     }
-
-
 
 
     @Override
@@ -129,14 +136,38 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-    public void updateNavigationView(String email) {
+
+    public void updateNavigationView(String email, boolean isAdmin) {
         View headerView = navigationView.getHeaderView(0);
         TextView emailTextView = headerView.findViewById(R.id.textView);
         emailTextView.setText(email);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+
+        // Wyświetl odpowiednie elementy dla zalogowanego użytkownika
+        menu.findItem(R.id.nav_home).setVisible(true);
+        menu.findItem(R.id.nav_gallery).setVisible(true);
+
+        if (email != null) {
+            // Użytkownik jest zalogowany
+            menu.findItem(R.id.nav_login).setVisible(false);
+            menu.findItem(R.id.nav_register).setVisible(false);
+
+            // Aktualizuj widoczność panelu administratora na podstawie wartości isAdmin
+            menu.findItem(R.id.nav_admin_panel).setVisible(isAdmin);
+            menu.findItem(R.id.nav_gallery).setVisible(!isAdmin);
+        } else {
+            // Użytkownik jest wylogowany
+            menu.findItem(R.id.nav_login).setVisible(true);
+            menu.findItem(R.id.nav_register).setVisible(true);
+            menu.findItem(R.id.nav_gallery).setVisible(false);
+            menu.findItem(R.id.nav_admin_panel).setVisible(false);
+        }
     }
-
-
-
-
-
 }
+
+
+
+
+

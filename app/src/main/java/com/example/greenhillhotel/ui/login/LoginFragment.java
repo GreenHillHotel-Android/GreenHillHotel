@@ -27,21 +27,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginFragment extends Fragment {
 
     FirebaseAuth mAuth;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
     }
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             NavController navController = Navigation.findNavController(requireView());
             navController.navigate(R.id.nav_home);
             Toast.makeText(getActivity(), "You are already logged in!", Toast.LENGTH_SHORT).show();
@@ -60,12 +65,6 @@ public class LoginFragment extends Fragment {
         TextView textView = view.findViewById(R.id.registerNow);
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-
-        if (currentUser != null) {
-            NavController navController = Navigation.findNavController(container);
-            navController.navigate(R.id.nav_home);
-        }
-
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,12 +81,12 @@ public class LoginFragment extends Fragment {
                 email = String.valueOf(emailEditText.getText());
                 password = String.valueOf(passwordEditText.getText());
 
-                if (TextUtils.isEmpty(email)){
+                if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getActivity(), "Wprowadz email", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)){
+                if (TextUtils.isEmpty(password)) {
                     Toast.makeText(getActivity(), "Wprowadz haslo", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -97,15 +96,28 @@ public class LoginFragment extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(getContext(),"Login succesful", Toast.LENGTH_SHORT).show();
-                                    NavController navController = Navigation.findNavController(v);
-                                    navController.navigate(R.id.nav_home);
+                                    Toast.makeText(getContext(), "Login succesful", Toast.LENGTH_SHORT).show();
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
                                     if (currentUser != null) {
-                                        MainActivity mainActivity = (MainActivity) getActivity();
-                                        mainActivity.updateNavigationView(currentUser.getEmail());
+                                        String uid = currentUser.getUid();
+                                        DocumentReference userRef = db.collection("users").document(uid);
+                                        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document != null && document.exists()) {
+                                                        boolean isAdmin = document.getBoolean("isAdmin");
+                                                        MainActivity mainActivity = (MainActivity) getActivity();
+                                                        mainActivity.updateNavigationView(currentUser.getEmail(), isAdmin);
+                                                    }
+                                                }
+                                            }
+                                        });
                                     }
-                                    // Sign in success, update UI with the signed-in user's information
+
+                                    NavController navController = Navigation.findNavController(v);
+                                    navController.navigate(R.id.nav_home);
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(getActivity(), "Authentication failed.",
@@ -113,8 +125,6 @@ public class LoginFragment extends Fragment {
                                 }
                             }
                         });
-
-
             }
         });
 
