@@ -16,6 +16,7 @@
         android:theme="@style/Theme.GreenHillHotel"
         tools:targetApi="31">
 
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1434856277933555~1829583579"/>
@@ -39,6 +40,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <receiver
+            android:name=".ui.book.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

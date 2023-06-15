@@ -1,6 +1,14 @@
 package com.example.greenhillhotel.ui.book;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
@@ -31,12 +40,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class ConfigureFragment extends Fragment {
 
+    private AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
     private Spinner spinner ;
     private ArrayAdapter<String> adapter ;
     TextView roomNumber;
@@ -61,6 +73,9 @@ public class ConfigureFragment extends Fragment {
         balcony = view.findViewById(R.id.balcony);
         tv = view.findViewById(R.id.switch2);
         confirmButton = view.findViewById(R.id.buttonConfirm);
+        alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(requireContext(), AlarmReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0);
 
         getParentFragmentManager().setFragmentResultListener("requestSearch", this, new FragmentResultListener() {
             @Override
@@ -110,6 +125,8 @@ public class ConfigureFragment extends Fragment {
                                 Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
                                 NavController navController = Navigation.findNavController(v);
                                 navController.navigate(R.id.nav_home);
+                                setNotification();
+                                showAlarmSetNotification();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -127,5 +144,34 @@ public class ConfigureFragment extends Fragment {
 
 
         return view;
+    }
+    private void setNotification() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(searchData.arrival);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+        long notificationTime = calendar.getTimeInMillis();
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, notificationTime, alarmIntent);
+    }
+
+    private void showAlarmSetNotification() {
+        String notificationText = "Alarm set for " + searchData.arrival.toString(); // Określ treść powiadomienia
+
+        NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Utwórz kanał powiadomień dla Androida 8.0 (API 26) i nowszych wersji
+            NotificationChannel channel = new NotificationChannel("AlarmSetChannel", "Alarm Set Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), "AlarmSetChannel")
+                .setSmallIcon(R.drawable.ic_menu_gallery)
+                .setContentTitle("Alarm Set")
+                .setContentText(notificationText)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        notificationManager.notify(0, builder.build());
     }
 }
