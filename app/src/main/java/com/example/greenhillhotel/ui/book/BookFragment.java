@@ -35,6 +35,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Fragment that is responsible for searching for an available room.
+ */
 public class BookFragment extends Fragment {
 
     EditText date;
@@ -50,7 +53,14 @@ public class BookFragment extends Fragment {
     DocumentSnapshot availableRoom;
     SimpleDateFormat dateFormat;
     SimpleDateFormat todayFormat;
-
+    /**
+     * Method to implement search panel and its functionality.
+     *
+     * It is responsible for collecting user input,
+     * validation of the input and passing it to the configuration fragment.
+     *
+     * @see ConfigureFragment
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book, container, false);
@@ -61,6 +71,11 @@ public class BookFragment extends Fragment {
 
         // perform click event on edit text
         date.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Method to get the user calendar input.
+             *
+             * It is responsible for getting the arrival date.
+             */
             @Override
             public void onClick(View v) {
                 final Calendar c = Calendar.getInstance();
@@ -71,6 +86,9 @@ public class BookFragment extends Fragment {
                 datePickerDialog = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
 
+                            /**
+                             * Method to set the text value of the arrival date.
+                             */
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
@@ -87,6 +105,11 @@ public class BookFragment extends Fragment {
             }
         });
         date2.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Method to get the user calendar input.
+             *
+             * It is responsible for getting the departure date.
+             */
             @Override
             public void onClick(View v) {
                 final Calendar c = Calendar.getInstance();
@@ -96,7 +119,9 @@ public class BookFragment extends Fragment {
                 // date picker dialog
                 datePickerDialog2 = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
-
+                            /**
+                             * Method to set the text value of the departure date.
+                             */
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
@@ -119,6 +144,10 @@ public class BookFragment extends Fragment {
         pickerVals  = new String[] {"1", "2", "3"};
         picker1.setDisplayedValues(pickerVals);
         picker1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            /**
+             * Listener responsible for handling the change of
+             * people count value.
+             */
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 int valuePicker1 = picker1.getValue();
@@ -127,6 +156,12 @@ public class BookFragment extends Fragment {
         });
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Method to search for an available room
+             * after pressing the search button.
+             *
+             * It  is responsible for input validation and getting the room data from firebase.
+             */
             @Override
             public void onClick(View v) {
                 dateFormat = new SimpleDateFormat("dd/MM/yyyy");
