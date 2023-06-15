@@ -48,7 +48,7 @@
         android:textStyle="bold"
         android:text="Departure: "/>
     <TextView
-        android:id="@+id/numberOfRooms"
+        android:id="@+id/numberOfPeople"
         android:layout_width="250dp"
         android:layout_height="30dp"
         android:layout_marginTop="118dp"
