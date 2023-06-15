@@ -33,7 +33,7 @@
         android:layout_marginTop="65dp"
         android:textColor="#092"
         android:textColorHint="#090"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:text="User ID:"/>
     <TextView
