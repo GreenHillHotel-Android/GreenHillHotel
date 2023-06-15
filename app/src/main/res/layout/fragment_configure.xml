@@ -43,17 +43,6 @@
         android:textSize="15sp"
         android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/room_number1"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="90dp"
-        android:text="1"
-        android:focusable="false"
-        android:textColor="#091"
-        android:textSize="15sp"
-        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/arrival1"
@@ -146,6 +135,13 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="245dp"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280dp"
+        android:text="Confirm"/>
 
 
 
