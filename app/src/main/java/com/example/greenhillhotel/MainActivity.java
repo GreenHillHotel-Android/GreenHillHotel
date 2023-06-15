@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_login, R.id.nav_register, R.id.nav_admin_panel)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_login, R.id.nav_register, R.id.nav_admin_panel, R.id.nav_book)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -157,12 +157,14 @@ public class MainActivity extends AppCompatActivity {
             // Aktualizuj widoczność panelu administratora na podstawie wartości isAdmin
             menu.findItem(R.id.nav_admin_panel).setVisible(isAdmin);
             menu.findItem(R.id.nav_gallery).setVisible(!isAdmin);
+            menu.findItem(R.id.nav_book).setVisible(!isAdmin);
         } else {
             // Użytkownik jest wylogowany
             menu.findItem(R.id.nav_login).setVisible(true);
             menu.findItem(R.id.nav_register).setVisible(true);
             menu.findItem(R.id.nav_gallery).setVisible(false);
             menu.findItem(R.id.nav_admin_panel).setVisible(false);
+            menu.findItem(R.id.nav_book).setVisible(false);
         }
     }
 }

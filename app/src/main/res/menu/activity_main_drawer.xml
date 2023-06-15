@@ -15,6 +15,11 @@
             android:title="Reservations" />
 
         <item
+            android:id="@+id/nav_book"
+            android:icon="@drawable/ic_baseline_book_online_24"
+            android:title="Book a room" />
+
+        <item
             android:id="@+id/nav_admin_panel"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Admin Panel" />
@@ -23,6 +28,7 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_baseline_map_24"
             android:title="Localization" />
+
 
         <item
             android:id="@+id/nav_login"
