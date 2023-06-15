@@ -80,78 +80,85 @@ public class MyReservationsFragment extends Fragment {
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         todayFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        db.collection("reservations")
-                .whereEqualTo("uid", user.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        reservations = task.getResult().getDocuments();
-                        if (reservations.size() == 0) {
-                            roomNumber.setVisibility(View.GONE);
-                            noReservations.setVisibility(View.VISIBLE);
-                            spinner2.setVisibility(View.GONE);
-                            cancelButton.setVisibility(View.GONE);
-                            arrival.setVisibility(View.GONE);
-                            departure.setVisibility(View.GONE);
-                            tv.setVisibility(View.GONE);
-                            balcony.setVisibility(View.GONE);
-                            bedConfig.setVisibility(View.GONE);
-                        }
-
-                        for (DocumentSnapshot document : reservations) {
-                            items.add(String.format("%s -> %s",
-                                    dateFormat.format(document.getDate("arrival")),
-                                    dateFormat.format(document.getDate("departure"))));
-                        }
-
-                        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-                        spinner2.setAdapter(adapter);
-
-                        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                db.collection("reservations")
+                        .whereEqualTo("user", task.getResult().getReference())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                reservationIndex = position;
-                                arrival.setText("Arrival: " + dateFormat.format(reservations.get(position).getDate("arrival")));
-                                departure.setText("Departure: " + dateFormat.format(reservations.get(position).getDate("departure")));
-                                tv.setText("Television: " + (boolean) reservations.get(position).get("tv"));
-                                DocumentReference roomDataReference = (DocumentReference) reservations.get(position).get("room");
-                                roomDataReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                reservations = task.getResult().getDocuments();
+                                if (reservations.size() == 0) {
+                                    roomNumber.setVisibility(View.GONE);
+                                    noReservations.setVisibility(View.VISIBLE);
+                                    spinner2.setVisibility(View.GONE);
+                                    cancelButton.setVisibility(View.GONE);
+                                    arrival.setVisibility(View.GONE);
+                                    departure.setVisibility(View.GONE);
+                                    tv.setVisibility(View.GONE);
+                                    balcony.setVisibility(View.GONE);
+                                    bedConfig.setVisibility(View.GONE);
+                                }
+
+                                for (DocumentSnapshot document : reservations) {
+                                    items.add(String.format("%s -> %s",
+                                            dateFormat.format(document.getDate("arrival")),
+                                            dateFormat.format(document.getDate("departure"))));
+                                }
+
+                                adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+                                spinner2.setAdapter(adapter);
+
+                                spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        roomData = task.getResult();
-                                        balcony.setText("Balcony: " + (boolean) roomData.get("isBalcony"));
-                                        roomNumber.setText("Room number: " + roomData.get("id"));
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        reservationIndex = position;
+                                        arrival.setText("Arrival: " + dateFormat.format(reservations.get(position).getDate("arrival")));
+                                        departure.setText("Departure: " + dateFormat.format(reservations.get(position).getDate("departure")));
+                                        tv.setText("Television: " + (boolean) reservations.get(position).get("tv"));
+                                        DocumentReference roomDataReference = (DocumentReference) reservations.get(position).get("room");
+                                        roomDataReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                roomData = task.getResult();
+                                                balcony.setText("Balcony: " + (boolean) roomData.get("isBalcony"));
+                                                roomNumber.setText("Room number: " + roomData.get("id"));
+                                            }
+                                        });
+                                        bedConfig.setText("Bed config: " + reservations.get(position).get("bedConfig").toString());
+                                        try {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                Date today = todayFormat.parse(LocalDate.now().toString());
+                                                Date arrival = dateFormat.parse(dateFormat.format(reservations.get(position).getDate("arrival")));
+                                                long diffInMillies = Math.abs(arrival.getTime() - today.getTime());
+                                                long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                                                Log.d("tag", String.valueOf(diff));
+                                                boolean cancelable = diff >= 7;
+                                                Log.d("tag", String.valueOf(cancelable));
+                                                if (!cancelable) {
+                                                    cancelButton.setVisibility(View.GONE);
+                                                }
+                                                else {
+                                                    cancelButton.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                        return;
                                     }
                                 });
-                                bedConfig.setText("Bed config: " + reservations.get(position).get("bedConfig").toString());
-                                try {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        Date today = todayFormat.parse(LocalDate.now().toString());
-                                        Date arrival = dateFormat.parse(dateFormat.format(reservations.get(position).getDate("arrival")));
-                                        long diffInMillies = Math.abs(arrival.getTime() - today.getTime());
-                                        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                                        Log.d("tag", String.valueOf(diff));
-                                        boolean cancelable = diff >= 7;
-                                        Log.d("tag", String.valueOf(cancelable));
-                                        if (!cancelable) {
-                                            cancelButton.setVisibility(View.GONE);
-                                        }
-                                        else {
-                                            cancelButton.setVisibility(View.VISIBLE);
-                                        }
-                                    }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-                                return;
                             }
                         });
-                    }
-                });
+            }
+        });
+
+
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
