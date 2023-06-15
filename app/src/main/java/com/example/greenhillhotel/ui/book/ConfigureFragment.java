@@ -10,12 +10,17 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.greenhillhotel.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -93,7 +98,21 @@ public class ConfigureFragment extends Fragment {
                 reservationData.put("room", searchData.room.getReference());
                 reservationData.put("tv", isTv);
                 reservationData.put("uid", user.getUid());
-                db.collection("reservations").document().set(reservationData);
+                db.collection("reservations").document().set(reservationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
+                        NavController navController = Navigation.findNavController(v);
+                        navController.navigate(R.id.nav_home);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Failed to book a room.", Toast.LENGTH_SHORT).show();
+                        NavController navController = Navigation.findNavController(v);
+                        navController.navigate(R.id.nav_home);
+                    }
+                });
             }
         });
 
