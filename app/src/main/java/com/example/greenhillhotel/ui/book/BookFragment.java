@@ -49,6 +49,7 @@ public class BookFragment extends Fragment {
     List<DocumentSnapshot> reservedRooms = new ArrayList<>();
     DocumentSnapshot availableRoom;
     SimpleDateFormat dateFormat;
+    SimpleDateFormat todayFormat;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -128,11 +129,12 @@ public class BookFragment extends Fragment {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+                dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                todayFormat = new SimpleDateFormat(("yyyy-MM-dd"));
                 try {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        String todayString = dateFormat.format(new Date());
-                        Date today = dateFormat.parse(todayString);
+                        Date today = todayFormat.parse(LocalDate.now().toString());
+                        Log.d("tag", String.valueOf(today));
                         Date accommodationDate = dateFormat.parse(String.valueOf(date.getText()));
                         Date departureDate = dateFormat.parse(String.valueOf(date2.getText()));
 

@@ -11,12 +11,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.greenhillhotel.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,10 +33,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MyReservationsFragment extends Fragment {
 
@@ -47,7 +55,10 @@ public class MyReservationsFragment extends Fragment {
     Button cancelButton;
     List<String> items = new ArrayList<>();
     SimpleDateFormat dateFormat;
+    SimpleDateFormat todayFormat;
     DocumentSnapshot roomData;
+    int reservationIndex;
+    ArrayAdapter<String> adapter;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,7 +77,8 @@ public class MyReservationsFragment extends Fragment {
         balcony = view.findViewById(R.id.doesBalcony);
         bedConfig = view.findViewById(R.id.configuration);
         spinner2 = view.findViewById(R.id.spinner1);
-        dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        todayFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         db.collection("reservations")
                 .whereEqualTo("uid", user.getUid())
@@ -92,12 +104,14 @@ public class MyReservationsFragment extends Fragment {
                                     dateFormat.format(document.getDate("arrival")),
                                     dateFormat.format(document.getDate("departure"))));
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+
+                        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
                         spinner2.setAdapter(adapter);
 
                         spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                reservationIndex = position;
                                 arrival.setText("Arrival: " + dateFormat.format(reservations.get(position).getDate("arrival")));
                                 departure.setText("Departure: " + dateFormat.format(reservations.get(position).getDate("departure")));
                                 tv.setText("Television: " + (boolean) reservations.get(position).get("tv"));
@@ -113,12 +127,12 @@ public class MyReservationsFragment extends Fragment {
                                 bedConfig.setText("Bed config: " + reservations.get(position).get("bedConfig").toString());
                                 try {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        Date today = dateFormat.parse(dateFormat.format(new Date()));
-                                        Calendar c = Calendar.getInstance();
-                                        c.setTime(today);
-                                        c.add(Calendar.DATE, 7);
-                                        Date plusWeek = c.getTime();
-                                        boolean cancelable = plusWeek.compareTo(reservations.get(position).getDate("arrival")) <= 0;
+                                        Date today = todayFormat.parse(LocalDate.now().toString());
+                                        Date arrival = dateFormat.parse(dateFormat.format(reservations.get(position).getDate("arrival")));
+                                        long diffInMillies = Math.abs(arrival.getTime() - today.getTime());
+                                        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                                        Log.d("tag", String.valueOf(diff));
+                                        boolean cancelable = diff >= 7;
                                         Log.d("tag", String.valueOf(cancelable));
                                         if (!cancelable) {
                                             cancelButton.setVisibility(View.GONE);
@@ -130,10 +144,7 @@ public class MyReservationsFragment extends Fragment {
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-
-
                             }
-
                             @Override
                             public void onNothingSelected(AdapterView<?> parent) {
                                 return;
@@ -141,6 +152,30 @@ public class MyReservationsFragment extends Fragment {
                         });
                     }
                 });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DocumentSnapshot reservationSnapshot = reservations.get(reservationIndex);
+                DocumentReference reservationReference = reservationSnapshot.getReference();
+                reservationReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
+                        reservations.remove(reservationSnapshot);
+                        items.remove(reservationIndex);
+                        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+                        spinner2.setAdapter(adapter);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Failed to cancel a room.", Toast.LENGTH_SHORT).show();
+                        NavController navController = Navigation.findNavController(v);
+                        navController.navigate(R.id.nav_home);
+                    }
+                });
+            }
+        });
 
         return view;
     }
