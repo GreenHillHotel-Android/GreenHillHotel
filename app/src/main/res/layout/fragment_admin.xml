@@ -28,7 +28,7 @@
         android:spinnerMode="dropdown"/>
     <TextView
         android:id="@+id/userID"
-        android:layout_width="200dp"
+        android:layout_width="400dp"
         android:layout_height="30dp"
         android:layout_marginTop="65dp"
         android:textColor="#092"
