@@ -9,17 +9,92 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+
+    <TextView
+        android:id="@+id/noReservation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="You have no reservations."
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
     <Spinner
         android:id="@+id/spinner1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:spinnerMode="dropdown"/>
+    <TextView
+        android:id="@+id/arrivalRes"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="65dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Arrival: "/>
+    <TextView
+        android:id="@+id/departureRes"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="65dp"
+        android:textAlignment="viewEnd"
+        android:layout_alignParentEnd="true"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Departure: "/>
+    <TextView
+        android:id="@+id/numberOfRooms"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="92dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Number of people: "/>
+    <TextView
+        android:id="@+id/doesTv"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="118dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Television: "/>
+    <TextView
+        android:id="@+id/doesBalcony"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="143dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Balcony: "/>
+    <TextView
+        android:id="@+id/configuration"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="170dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Bed config: "/>
+
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="200dp"
         android:text="Cancel"/>
 
 
