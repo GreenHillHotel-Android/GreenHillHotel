@@ -35,6 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment that is responsible for management of all the reservations.
+ */
 public class AdminFragment extends Fragment {
     Spinner spinner3;
     View view;
@@ -57,7 +60,12 @@ public class AdminFragment extends Fragment {
     DocumentSnapshot roomData;
     DocumentSnapshot userData;
 
-
+    /**
+     * Method to implement admin panel and its functionality.
+     *
+     * It is responsible for displaying all of the users reservations,
+     * formatting the data and canceling the reservations.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_admin, container, false);
@@ -143,11 +151,19 @@ public class AdminFragment extends Fragment {
                     }
                 });
         cancelButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Listener which is invoked when you click the cancel button
+             */
             @Override
             public void onClick(View v) {
                 DocumentSnapshot reservationSnapshot = reservations.get(reservationIndex);
                 DocumentReference reservationReference = reservationSnapshot.getReference();
                 reservationReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    /**
+                     * Listener which is responsible for all of the actions
+                     * after successful cancellation of the reservation.
+                     * It sends a toast with information and manages List objects.
+                     */
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
@@ -157,6 +173,11 @@ public class AdminFragment extends Fragment {
                         spinner3.setAdapter(adapter);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
+                    /**
+                     * Listener which is responsible for all of the actions
+                     * after unsuccessful cancellation of the reservation.
+                     * It sends a toast with information and returns to home page.
+                     */
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getActivity(), "Failed to cancel a room.", Toast.LENGTH_SHORT).show();
