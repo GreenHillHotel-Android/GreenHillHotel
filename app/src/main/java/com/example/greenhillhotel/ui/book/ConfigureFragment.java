@@ -44,7 +44,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Fragment that is responsible for room configuration and reservations.
+ *
+ * It parses the data given by BookFragment and registers a new reservation.
+ *
+ * @see BookFragment
+ * @see SearchBean
+ */
 public class ConfigureFragment extends Fragment {
 
     private AlarmManager alarmManager;
@@ -62,6 +69,12 @@ public class ConfigureFragment extends Fragment {
     SearchBean searchData;
     SimpleDateFormat dateFormat;
 
+    /**
+     * Method to implement configurator and its functionalities.
+     *
+     * It is responsible for properly displaying the room data
+     * and registering a new reservation.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_configure, container, false);
@@ -78,6 +91,12 @@ public class ConfigureFragment extends Fragment {
         alarmIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0);
 
         getParentFragmentManager().setFragmentResultListener("requestSearch", this, new FragmentResultListener() {
+            /**
+             * Method to receive and parse given data from the BookFragment.
+             *
+             * @param requestKey key set in the BookFragment
+             * @param result all of the needed data from BookFragment
+             */
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -102,6 +121,11 @@ public class ConfigureFragment extends Fragment {
         });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Method to register new reservation after pressing confirm button.
+             *
+             * It puts all of the needed data into the firebase.
+             */
             @Override
             public void onClick(View v) {
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -116,6 +140,11 @@ public class ConfigureFragment extends Fragment {
                 reservationData.put("room", searchData.room.getReference());
                 reservationData.put("tv", isTv);
                 db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    /**
+                     * Method to inform user about the successful registration of the new reservation
+                     *
+                     * It also sets the alarm to push a notification the day before the arrival date.
+                     */
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         reservationData.put("user", task.getResult().getReference());
@@ -129,6 +158,9 @@ public class ConfigureFragment extends Fragment {
                                 showAlarmSetNotification();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
+                            /**
+                             * Method to inform user about the unsuccessful registration of the new reservation
+                             */
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getActivity(), "Failed to book a room.", Toast.LENGTH_SHORT).show();
@@ -145,6 +177,10 @@ public class ConfigureFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * Method to set a new notification.
+     */
     private void setNotification() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(searchData.arrival);
@@ -155,12 +191,13 @@ public class ConfigureFragment extends Fragment {
         alarmManager.set(AlarmManager.RTC_WAKEUP, notificationTime, alarmIntent);
     }
 
+    /**
+     * Method to show the notification.
+     */
     private void showAlarmSetNotification() {
         String notificationText = "Alarm set for " + searchData.arrival.toString(); // Określ treść powiadomienia
-
         NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Utwórz kanał powiadomień dla Androida 8.0 (API 26) i nowszych wersji
             NotificationChannel channel = new NotificationChannel("AlarmSetChannel", "Alarm Set Channel", NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
         }
