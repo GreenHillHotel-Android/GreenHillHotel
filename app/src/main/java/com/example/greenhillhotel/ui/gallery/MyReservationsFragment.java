@@ -169,7 +169,7 @@ public class MyReservationsFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Failed to book a room.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Failed to cancel a room.", Toast.LENGTH_SHORT).show();
                         NavController navController = Navigation.findNavController(v);
                         navController.navigate(R.id.nav_home);
                     }
