@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.greenhillhotel.ui.gallery.LoginFragment"
+        android:name="com.example.greenhillhotel.ui.gallery.MyReservationsFragment"
         android:label="Gallery"
         tools:layout="@layout/fragment_gallery" />
 
@@ -46,6 +46,12 @@
         android:name="com.example.greenhillhotel.ui.book.BookFragment"
         android:label="Book a Room"
         tools:layout="@layout/fragment_book" />
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.example.greenhillhotel.ui.book.ConfigureFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_configure" />
 
 
 
