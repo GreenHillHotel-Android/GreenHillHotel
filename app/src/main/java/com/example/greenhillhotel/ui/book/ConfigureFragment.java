@@ -19,10 +19,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.greenhillhotel.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -97,22 +100,28 @@ public class ConfigureFragment extends Fragment {
                 reservationData.put("bedConfig", bedConfig);
                 reservationData.put("room", searchData.room.getReference());
                 reservationData.put("tv", isTv);
-                reservationData.put("uid", user.getUid());
-                db.collection("reservations").document().set(reservationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
-                        NavController navController = Navigation.findNavController(v);
-                        navController.navigate(R.id.nav_home);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Failed to book a room.", Toast.LENGTH_SHORT).show();
-                        NavController navController = Navigation.findNavController(v);
-                        navController.navigate(R.id.nav_home);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        reservationData.put("user", task.getResult().getReference());
+                        db.collection("reservations").document().set(reservationData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
+                                NavController navController = Navigation.findNavController(v);
+                                navController.navigate(R.id.nav_home);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), "Failed to book a room.", Toast.LENGTH_SHORT).show();
+                                NavController navController = Navigation.findNavController(v);
+                                navController.navigate(R.id.nav_home);
+                            }
+                        });
                     }
                 });
+
             }
         });
 
