@@ -18,7 +18,7 @@
         android:text="You have no reservations."
         android:textColor="#092"
         android:textColorHint="#090"
-        android:textSize="15sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:visibility="gone"/>
     <Spinner
