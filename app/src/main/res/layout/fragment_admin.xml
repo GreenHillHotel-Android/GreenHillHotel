@@ -9,17 +9,120 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/noReservation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="There are no reservations."
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/spinner1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:spinnerMode="dropdown"/>
+    <TextView
+        android:id="@+id/userID"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="65dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="User ID:"/>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="200dp"
+        android:layout_below="@+id/userID"
+        android:layout_height="30dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Name:"/>
+    <TextView
+        android:id="@+id/surname"
+        android:layout_width="200dp"
+        android:layout_below="@+id/name"
+        android:layout_height="30dp"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Surname:"/>
+    <TextView
+        android:id="@+id/roomNumber"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/surname"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Room number:"/>
+    <TextView
+        android:id="@+id/arrivalRes"
+        android:layout_width="260dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/roomNumber"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Arrival: "/>
+    <TextView
+        android:id="@+id/departureRes"
+        android:layout_width="260dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/arrivalRes"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Departure: "/>
+
+    <TextView
+        android:id="@+id/doesTv"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/departureRes"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Television: "/>
+    <TextView
+        android:id="@+id/doesBalcony"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/doesTv"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Balcony: "/>
+    <TextView
+        android:id="@+id/configuration"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/doesBalcony"
+        android:textColor="#092"
+        android:textColorHint="#090"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Bed config: "/>
+
     <Button
         android:id="@+id/buttonCancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="65dp"
+        android:layout_below="@+id/configuration"
         android:text="Cancel"/>
 
 
