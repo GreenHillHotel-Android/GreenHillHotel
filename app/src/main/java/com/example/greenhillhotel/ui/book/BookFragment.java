@@ -20,12 +20,20 @@ import androidx.navigation.Navigation;
 
 import com.example.greenhillhotel.MainActivity;
 import com.example.greenhillhotel.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class BookFragment extends Fragment {
 
@@ -37,6 +45,10 @@ public class BookFragment extends Fragment {
     private String[] pickerVals;
     Button btnSearch;
     Switch hasBalconySwitch;
+    List<DocumentSnapshot> rooms = new ArrayList<>();
+    List<DocumentSnapshot> reservedRooms = new ArrayList<>();
+    DocumentSnapshot availableRoom;
+    SimpleDateFormat dateFormat;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -101,22 +113,22 @@ public class BookFragment extends Fragment {
         });
 
         picker1 = view.findViewById(R.id.picker);
-        picker1.setMaxValue(2);
-        picker1.setMinValue(0);
+        picker1.setMaxValue(3);
+        picker1.setMinValue(1);
         pickerVals  = new String[] {"1", "2", "3"};
         picker1.setDisplayedValues(pickerVals);
         picker1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 int valuePicker1 = picker1.getValue();
-                Log.d("picker value", pickerVals[valuePicker1]);
+                Log.d("picker value", pickerVals[valuePicker1-1]);
             }
         });
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+                dateFormat = new SimpleDateFormat("dd/mm/yyyy");
                 try {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                         String todayString = dateFormat.format(new Date());
@@ -126,19 +138,59 @@ public class BookFragment extends Fragment {
 
                         if (accommodationDate.compareTo(today) < 0 || departureDate.compareTo(accommodationDate) <= 0) {
                             Toast.makeText(getActivity(), "Wrong date entered!", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            NavController navController = Navigation.findNavController(v);
-                            navController.navigate(R.id.nav_search);
-                        }
+                        } else {
+                            boolean hasBalcony = hasBalconySwitch.isChecked();
+                            int people = picker1.getValue();
 
+
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("rooms")
+                                    .whereEqualTo("capacity", people)
+                                    .whereEqualTo("isBalcony", hasBalcony)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            rooms = task.getResult().getDocuments();
+                                            db.collection("reservations")
+                                                    .whereGreaterThan("departure", accommodationDate)
+                                                    .get()
+                                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                            QuerySnapshot querySnapshot = task.getResult();
+                                                            List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+                                                            for (DocumentSnapshot snapshot : documents) {
+                                                                if (snapshot.getTimestamp("arrival").toDate().before(departureDate)) {
+                                                                    reservedRooms.add(snapshot);
+                                                                }
+                                                            }
+                                                            for (DocumentSnapshot reservedRoom : reservedRooms) {
+                                                                rooms.remove(reservedRoom.get("roomid"));
+                                                            }
+                                                            if (rooms.size() > 0) {
+                                                                availableRoom = rooms.get(0);
+                                                                SearchBean searchData = new SearchBean(
+                                                                        (long) availableRoom.get("id"),
+                                                                        dateFormat.format(accommodationDate),
+                                                                        dateFormat.format(departureDate),
+                                                                        people,
+                                                                        hasBalcony
+                                                                );
+
+                                                                // transfer data to another fragment
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    });
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
         });
-
         return view;
     }
 }
