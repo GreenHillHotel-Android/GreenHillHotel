@@ -167,6 +167,31 @@ public class MainActivity extends AppCompatActivity {
             menu.findItem(R.id.nav_book).setVisible(false);
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            DocumentReference userRef = db.collection("users").document(uid);
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            boolean isAdmin = document.getBoolean("isAdmin");
+                            updateNavigationView(currentUser.getEmail(), isAdmin);
+                        }
+                    }
+                }
+            });
+
+
+        }
+    }
 }
 
 
