@@ -70,9 +70,8 @@
         android:id="@+id/departure1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="145dp"
         android:text="Date of departure:  "
-        android:textAlignment="viewEnd"
         android:focusable="false"
         android:textColor="#091"
         android:textSize="15sp"
@@ -82,7 +81,7 @@
         android:id="@+id/people1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="170dp"
         android:text="Number of people:  "
         android:textAlignment="viewStart"
         android:focusable="false"
@@ -93,7 +92,7 @@
         android:id="@+id/balcony"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="170dp"
         android:text="Balcony:  "
         android:textAlignment="viewEnd"
         android:focusable="false"
@@ -104,7 +103,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="175dp"
+        android:layout_marginTop="190dp"
         android:text="Configuration:"
         android:textAlignment="center"
         android:focusable="false"
@@ -115,7 +114,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="215dp"
+        android:layout_marginTop="225dp"
         android:text="Choose bed config  "
         android:textAlignment="viewStart"
         android:focusable="false"
@@ -126,7 +125,7 @@
         android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="215dp"
+        android:layout_marginTop="225dp"
         android:text="Television  "
         android:textAlignment="viewEnd"
         android:focusable="false"
@@ -137,7 +136,7 @@
         android:id="@+id/spinner"
         android:layout_width="140dp"
         android:layout_height="30dp"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="240dp"
         android:spinnerMode="dropdown"/>
 
     <Switch
@@ -145,7 +144,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="232dp"
+        android:layout_marginTop="245dp"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
