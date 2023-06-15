@@ -47,21 +47,12 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:text="Departure: "/>
-    <TextView
-        android:id="@+id/numberOfPeople"
-        android:layout_width="250dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="118dp"
-        android:textColor="#092"
-        android:textColorHint="#090"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="Number of people: "/>
+
     <TextView
         android:id="@+id/doesTv"
         android:layout_width="200dp"
         android:layout_height="30dp"
-        android:layout_marginTop="143dp"
+        android:layout_marginTop="116dp"
         android:textColor="#092"
         android:textColorHint="#090"
         android:textSize="20sp"
@@ -71,7 +62,7 @@
         android:id="@+id/doesBalcony"
         android:layout_width="200dp"
         android:layout_height="30dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="140dp"
         android:textColor="#092"
         android:textColorHint="#090"
         android:textSize="20sp"
@@ -81,7 +72,7 @@
         android:id="@+id/configuration"
         android:layout_width="200dp"
         android:layout_height="30dp"
-        android:layout_marginTop="195dp"
+        android:layout_marginTop="165dp"
         android:textColor="#092"
         android:textColorHint="#090"
         android:textSize="20sp"
@@ -92,7 +83,7 @@
         android:id="@+id/buttonCancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
+        android:layout_marginTop="190dp"
         android:text="Cancel"/>
 
 
