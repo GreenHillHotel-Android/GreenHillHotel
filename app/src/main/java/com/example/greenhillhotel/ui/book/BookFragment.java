@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.greenhillhotel.MainActivity;
 import com.example.greenhillhotel.R;
@@ -124,6 +126,10 @@ public class BookFragment extends Fragment {
 
                         if (accommodationDate.compareTo(today) < 0 || departureDate.compareTo(accommodationDate) <= 0) {
                             Toast.makeText(getActivity(), "Wrong date entered!", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            NavController navController = Navigation.findNavController(v);
+                            navController.navigate(R.id.nav_search);
                         }
 
                     }
