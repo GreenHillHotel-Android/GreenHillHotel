@@ -62,7 +62,7 @@ public class ConfigureFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("requestSearch", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+                dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 searchData = (SearchBean) result.getSerializable("searchData");
                 roomNumber.append(Long.toString((Long) searchData.room.get("id")));
                 arrival.append(dateFormat.format(searchData.arrival));
