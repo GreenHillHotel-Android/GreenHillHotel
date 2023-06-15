@@ -1,14 +1,19 @@
 package com.example.greenhillhotel.ui.book;
 
-public class SearchBean {
-    long roomid;
-    String arrival;
-    String departure;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class SearchBean implements Serializable {
+    DocumentSnapshot room;
+    Date arrival;
+    Date departure;
     int people;
     boolean hasBalcony;
 
-    public SearchBean(long roomid, String arrival, String departure, int people, boolean hasBalcony) {
-        this.roomid = roomid;
+    public SearchBean(DocumentSnapshot room, Date arrival, Date departure, int people, boolean hasBalcony) {
+        this.room = room;
         this.arrival = arrival;
         this.departure = departure;
         this.people = people;

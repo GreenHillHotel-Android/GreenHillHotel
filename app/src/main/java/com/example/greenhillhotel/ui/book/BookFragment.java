@@ -171,14 +171,18 @@ public class BookFragment extends Fragment {
                                                             if (rooms.size() > 0) {
                                                                 availableRoom = rooms.get(0);
                                                                 SearchBean searchData = new SearchBean(
-                                                                        (long) availableRoom.get("id"),
-                                                                        dateFormat.format(accommodationDate),
-                                                                        dateFormat.format(departureDate),
+                                                                        availableRoom,
+                                                                        accommodationDate,
+                                                                        departureDate,
                                                                         people,
                                                                         hasBalcony
                                                                 );
 
-                                                                // transfer data to another fragment
+                                                                Bundle result = new Bundle();
+                                                                result.putSerializable("searchData", searchData);
+                                                                getParentFragmentManager().setFragmentResult("requestSearch", result);
+                                                                NavController navController = Navigation.findNavController(v);
+                                                                navController.navigate(R.id.nav_search);
                                                             }
                                                         }
                                                     });
