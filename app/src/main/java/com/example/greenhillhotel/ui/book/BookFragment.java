@@ -6,9 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,7 +19,11 @@ import androidx.fragment.app.Fragment;
 import com.example.greenhillhotel.MainActivity;
 import com.example.greenhillhotel.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 
 public class BookFragment extends Fragment {
 
@@ -26,12 +33,17 @@ public class BookFragment extends Fragment {
     DatePickerDialog datePickerDialog2;
     private NumberPicker picker1;
     private String[] pickerVals;
+    Button btnSearch;
+    Switch hasBalconySwitch;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book, container, false);
         date = (EditText) view.findViewById(R.id.date);
         date2 = (EditText) view.findViewById(R.id.date2);
+        btnSearch = view.findViewById(R.id.btnSearch);
+        hasBalconySwitch = view.findViewById(R.id.switch1);
+
         // perform click event on edit text
         date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,8 +111,27 @@ public class BookFragment extends Fragment {
             }
         });
 
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        String todayString = dateFormat.format(new Date());
+                        Date today = dateFormat.parse(todayString);
+                        Date accommodationDate = dateFormat.parse(String.valueOf(date.getText()));
+                        Date departureDate = dateFormat.parse(String.valueOf(date2.getText()));
 
+                        if (accommodationDate.compareTo(today) < 0 || departureDate.compareTo(accommodationDate) <= 0) {
+                            Toast.makeText(getActivity(), "Wrong date entered!", Toast.LENGTH_SHORT).show();
+                        }
 
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return view;
     }
