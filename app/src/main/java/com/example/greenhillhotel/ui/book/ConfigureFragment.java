@@ -88,7 +88,7 @@ public class ConfigureFragment extends Fragment {
         confirmButton = view.findViewById(R.id.buttonConfirm);
         alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(requireContext(), AlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0);
+        alarmIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         getParentFragmentManager().setFragmentResultListener("requestSearch", this, new FragmentResultListener() {
             /**

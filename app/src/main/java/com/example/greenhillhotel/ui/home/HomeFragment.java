@@ -28,6 +28,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Fragment that is responsible for displaying home page
+ * with a picture and a label.
+ */
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -36,6 +40,9 @@ public class HomeFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
+    /**
+     * Method to display home page content and ads.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -56,6 +63,9 @@ public class HomeFragment extends Fragment {
 
         InterstitialAd.load(getActivity(),"ca-app-pub-3940256099942544/1033173712", adRequest,
                 new InterstitialAdLoadCallback() {
+                    /**
+                     * Load an ad.
+                     */
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         // The mInterstitialAd reference will be null until
@@ -63,6 +73,9 @@ public class HomeFragment extends Fragment {
                         mInterstitialAd = interstitialAd;
                     }
 
+                    /**
+                     * Ad load failure.
+                     */
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
@@ -73,6 +86,12 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Method invoked on application start.
+     *
+     * It is responsible for admin permissions management
+     * and displaying ads.
+     */
     public void onStart() {
         super.onStart();
         if (mInterstitialAd != null) {
@@ -86,6 +105,9 @@ public class HomeFragment extends Fragment {
             String userEmail = currentUser.getEmail();
             DocumentReference userRef = db.collection("users").document(userEmail);
             userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                /**
+                 * Manage content based on user permissions.
+                 */
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
@@ -95,6 +117,9 @@ public class HomeFragment extends Fragment {
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
+                /**
+                 * Firebase failure
+                 */
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     // Obsłuż błąd pobierania dokumentu

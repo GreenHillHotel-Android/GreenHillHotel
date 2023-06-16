@@ -31,6 +31,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Fragment responsible for getting users input and logging in.
+ */
 public class LoginFragment extends Fragment {
 
     FirebaseAuth mAuth;
@@ -41,6 +44,9 @@ public class LoginFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Method to get current user without having to log in.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -53,6 +59,10 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to get users input, pass it to firebase
+     * and validate the credentials.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -66,6 +76,11 @@ public class LoginFragment extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         textView.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Move user to register view.
+             *
+             * @see RegistrationFragment
+             */
             @Override
             public void onClick(View v) {
                 NavController navController = Navigation.findNavController(v);
@@ -74,6 +89,9 @@ public class LoginFragment extends Fragment {
         });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Method invoked after pressing login button.
+             */
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
