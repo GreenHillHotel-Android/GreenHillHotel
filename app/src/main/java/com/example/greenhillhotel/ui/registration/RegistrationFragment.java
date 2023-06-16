@@ -40,14 +40,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * Fragment responsible for getting users input and registering new user.
+ */
 public class RegistrationFragment extends Fragment {
 
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-
+    /**
+     * Method to get users input, pass it to firebase
+     * and register a new account.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -63,6 +68,11 @@ public class RegistrationFragment extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         textView.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Move user to login view.
+             *
+             * @see LoginFragment
+             */
             @Override
             public void onClick(View v) {
                 NavController navController = Navigation.findNavController(v);
@@ -71,6 +81,12 @@ public class RegistrationFragment extends Fragment {
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Method invoked after pressing register button
+             *
+             * It validates the provided data
+             * and registers a new user.
+             */
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -93,6 +109,16 @@ public class RegistrationFragment extends Fragment {
 
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            /**
+                             * Method to put users credentials after successful
+                             * registration of a new account.
+                             *
+                             * It gathers name and surname information
+                             * and puts false into isAdmin field.
+                             *
+                             * To make someone an admin, you have to manually
+                             * change that fields value in firebase.
+                             */
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
