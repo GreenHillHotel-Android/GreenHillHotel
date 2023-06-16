@@ -19,6 +19,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.greenhillhotel.R;
+import com.example.greenhillhotel.ui.book.ConfigureFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,8 +42,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Fragment that is responsible for displaying all of users reservations
+ * and cancellation of the reservations.
+ *
+ */
 public class MyReservationsFragment extends Fragment {
-
     private Spinner spinner2 ;
     List<DocumentSnapshot> reservations = new ArrayList<>();
     TextView noReservations;
@@ -61,6 +66,12 @@ public class MyReservationsFragment extends Fragment {
     ArrayAdapter<String> adapter;
 
 
+    /**
+     * Method to implement users reservations panel and its functionality.
+     *
+     * It is responsible for displaying all of the users reservations,
+     * formatting the data and canceling the reservations.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reservation, container, false);
@@ -160,11 +171,19 @@ public class MyReservationsFragment extends Fragment {
 
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Listener which is invoked when you click the cancel button
+             */
             @Override
             public void onClick(View v) {
                 DocumentSnapshot reservationSnapshot = reservations.get(reservationIndex);
                 DocumentReference reservationReference = reservationSnapshot.getReference();
                 reservationReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    /**
+                     * Listener which is responsible for all of the actions
+                     * after successful cancellation of the reservation.
+                     * It sends a toast with information and manages List objects.
+                     */
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(getActivity(), "Success.", Toast.LENGTH_SHORT).show();
@@ -174,6 +193,11 @@ public class MyReservationsFragment extends Fragment {
                         spinner2.setAdapter(adapter);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
+                    /**
+                     * Listener which is responsible for all of the actions
+                     * after unsuccessful cancellation of the reservation.
+                     * It sends a toast with information and returns to home page.
+                     */
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getActivity(), "Failed to cancel a room.", Toast.LENGTH_SHORT).show();
