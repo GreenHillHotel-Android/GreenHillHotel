@@ -43,6 +43,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ktx.Firebase;
 
+/**
+ * MainActivity of the application.
+ *
+ * It is responsible for holding user session, creating proper fragments
+ * and the whole appearance of the application.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -54,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     TextView textView;
 
+    /**
+     * Method to get current user, show ads and build home page.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method invoked after creating options menu.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -137,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    /**
+     * Method to show proper menu options based on users permissions.
+     */
     public void updateNavigationView(String email, boolean isAdmin) {
         View headerView = navigationView.getHeaderView(0);
         TextView emailTextView = headerView.findViewById(R.id.textView);
@@ -168,6 +183,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method to get current user on application start
+     * and check permissions to properly display
+     * menu options.
+     */
     @Override
     protected void onStart() {
         super.onStart();
